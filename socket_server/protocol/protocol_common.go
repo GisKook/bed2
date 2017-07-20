@@ -1,5 +1,11 @@
 package protocol
 
+import (
+	"bytes"
+	"encoding/binary"
+	"github.com/giskook/bed2/base"
+)
+
 const (
 	PROTOCOL_START_FLAG    byte   = 0xce
 	PROTOCOL_END_FLAG      byte   = 0xce
@@ -23,23 +29,36 @@ const (
 	PROTOCOL_REP_ACTIVE_TEST uint16 = 0x8004
 )
 
-//func ParseHeader(buffer []byte) (*bytes.Reader, uint16, uint16, uint64) {
-//	reader := bytes.NewReader(buffer)
-//	reader.Seek(1, 0)
-//	length := base.ReadWord(reader)
-//	protocol_id := base.ReadWord(reader)
-//	tid_string := base.ReadBcdString(reader, 8)
-//	tid, _ := strconv.ParseUint(tid_string, 10, 64)
-//
-//	return reader, length, protocol_id, tid
-//}
-//
-//func WriteHeader(writer *bytes.Buffer, length uint16, cmdid uint16, cpid uint64) {
-//	writer.WriteByte(PROTOCOL_START_FLAG)
-//	base.WriteWord(writer, length)
-//	base.WriteWord(writer, cmdid)
-//	base.WriteBcdCpid(writer, cpid)
-//}
+func ParseHeader(buffer []byte) *bytes.Reader {
+	reader := bytes.NewReader(buffer)
+	reader.Seek(7, 0)
+
+	return reader
+}
+
+func WriteHeader(writer *bytes.Buffer, cmdid uint16) {
+	writer.WriteByte(PROTOCOL_START_FLAG)
+	base.WriteWord(writer, 0)
+	base.WriteWord(writer, PROTOCOL_BED_RECV_FLAG)
+	base.WriteWord(writer, cmdid)
+}
+
+func WriteTail(writer *bytes.Buffer) {
+	WriteLength(writer)
+	sum := checkSum(writer.Bytes(), uint16(writer.Len()))
+	base.WriteByte(writer, sum)
+	base.WriteByte(writer, PROTOCOL_END_FLAG)
+}
+
+func WriteLength(writer *bytes.Buffer) {
+	length := writer.Len()
+	length += 2
+	length_byte := make([]byte, 2)
+	binary.BigEndian.PutUint16(length_byte, uint16(length))
+	writer.Bytes()[1] = length_byte[0]
+	writer.Bytes()[2] = length_byte[1]
+}
+
 func checkSum(cmd []byte, cmdlen uint16) byte {
 	temp := cmd[0]
 	for i := uint16(1); i < cmdlen; i++ {

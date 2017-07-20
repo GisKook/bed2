@@ -20,7 +20,7 @@ type SocketConf struct {
 	RecvChanLimit int
 }
 type Configuration struct {
-	Http   *HttConf
+	Http   *HttpConf
 	Socket *SocketConf
 }
 

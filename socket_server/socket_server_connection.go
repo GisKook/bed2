@@ -50,6 +50,10 @@ func (c *Connection) UpdateWriteFlag() {
 	atomic.StoreInt64(&c.write_timestamp, time.Now().Unix())
 }
 
+func (c *Connection) Send(p gotcp.Packet) {
+	c.c.AsyncWritePacket(p, 0)
+}
+
 func (c *Connection) Check() {
 	defer func() {
 		c.c.Close()

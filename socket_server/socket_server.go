@@ -2,21 +2,25 @@ package socket_server
 
 import (
 	"github.com/gansidui/gotcp"
-	"github.com/giskook/conf"
+	"github.com/giskook/bed2/base"
+	"github.com/giskook/bed2/conf"
+	"log"
 	"net"
 	"time"
 )
 
 type SocketServer struct {
-	conf *conf.SocketConf
-	srv  *gotcp.Server
-	cm   *ConnMgr
+	conf            *conf.SocketConf
+	srv             *gotcp.Server
+	cm              *ConnMgr
+	SocketOutResult chan *base.SocketResponse
 }
 
 func NewSocketServer(conf *conf.SocketConf) *SocketServer {
 	return &SocketServer{
-		conf: conf,
-		cm:   NewConnMgr(),
+		conf:            conf,
+		cm:              NewConnMgr(),
+		SocketOutResult: make(chan *base.SocketResponse, 1024),
 	}
 }
 
@@ -39,4 +43,18 @@ func (ss *SocketServer) Start() error {
 
 	go ss.srv.Start(listener, time.Second)
 	log.Println("listening:", listener.Addr())
+
+	return nil
+}
+
+func (ss *SocketServer) Send(id uint64, p gotcp.Packet) {
+	c := ss.cm.Get(id)
+	if c != nil {
+		c.Send(p)
+	}
+}
+
+func (ss *SocketServer) Close() {
+	close(ss.SocketOutResult)
+	ss.srv.Stop()
 }

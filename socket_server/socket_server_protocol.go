@@ -3,6 +3,8 @@ package socket_server
 import (
 	"errors"
 	"github.com/gansidui/gotcp"
+	"log"
+	"net"
 )
 
 var (
@@ -13,7 +15,7 @@ type Raw struct {
 	raw []byte
 }
 
-func (r *Raw) Serialize() {
+func (r *Raw) Serialize() []byte {
 	return r.raw
 }
 
@@ -25,7 +27,7 @@ func (ss *SocketServer) ReadPacket(conn *net.TCPConn) (gotcp.Packet, error) {
 		return nil, err
 	}
 
-	if readLengh == 0 {
+	if length == 0 {
 		return nil, ErrPeerClosed
 	}
 

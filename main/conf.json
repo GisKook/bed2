@@ -1,0 +1,15 @@
+{ 
+	"Http":{
+		"Addr":":1234",
+		"TimeOut":10
+	},
+	"Socket":{
+		"BindPort":"1235",
+		"CheckInterval":10,
+		"ReadLimit":180,
+		"WriteLimit":180,
+		"ConnTimeOut":5,
+		"SendChanLimit":20,
+		"RecvChanLimit":20
+	}
+}

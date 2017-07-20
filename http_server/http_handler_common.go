@@ -1,0 +1,53 @@
+package http_server
+
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+)
+
+type Code int
+
+const (
+	HTTP_CONSTANT_SEND_REQ          string = "%x req \n"
+	HTTP_CONSTANT_SEND_REQ_LACK_PAR string = "%x req \n"
+
+	HTTP_REP_SUCCESS        Code = 0
+	HTTP_REP_LACK_PARAMETER Code = 1
+	HTTP_REP_INTERAL_ERROR  Code = 2
+	HTTP_REP_TIMEOUT        Code = 3
+)
+
+var HTTP_REQUEST_DESC []string = []string{
+	"成功",
+	"缺少参数",
+	"服务器内部错误",
+	"超时"}
+
+func (c Code) Desc() string {
+	return HTTP_REQUEST_DESC[c]
+}
+
+type GeneralResponse struct {
+	Code int    `json:"code"`
+	Desc string `json:"desc"`
+}
+
+func EncodeGeneralResponse(code Code) string {
+	general_response := &GeneralResponse{
+		Code: int(code),
+		Desc: code.Desc(),
+	}
+
+	resp, _ := json.Marshal(general_response)
+
+	return string(resp)
+}
+
+func RecordSend(r *http.Request) {
+	log.Printf(HTTP_CONSTANT_SEND_REQ, r)
+}
+
+func RecordSendLackParamter(r *http.Request) {
+	log.Println(HTTP_CONSTANT_SEND_REQ_LACK_PAR, r)
+}

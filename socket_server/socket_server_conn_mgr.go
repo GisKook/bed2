@@ -37,5 +37,5 @@ func (cm *ConnMgr) Del(id uint64) {
 	cm.mutex.Lock()
 	defer cm.mutex.Unlock()
 
-	delete(cm, id)
+	delete(cm.connections, id)
 }
