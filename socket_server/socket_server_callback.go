@@ -3,6 +3,7 @@ package socket_server
 import (
 	"github.com/gansidui/gotcp"
 	"github.com/giskook/bed2/socket_server/protocol"
+	"log"
 )
 
 func (ss *SocketServer) OnConnect(c *gotcp.Conn) bool {
@@ -13,6 +14,7 @@ func (ss *SocketServer) OnConnect(c *gotcp.Conn) bool {
 
 	c.PutExtraData(connection)
 	go connection.Check()
+	log.Printf("<CNT> %x \n", c.GetRawConn())
 
 	return true
 }
@@ -21,6 +23,7 @@ func (ss *SocketServer) OnClose(c *gotcp.Conn) {
 	connection := c.GetExtraData().(*Connection)
 	ss.cm.Del(connection.ID)
 	connection.Close()
+	log.Printf("<DIS> %x\n", c.GetRawConn())
 }
 
 func (ss *SocketServer) OnMessage(c *gotcp.Conn, p gotcp.Packet) bool {

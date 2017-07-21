@@ -22,7 +22,6 @@ func (r *Raw) Serialize() []byte {
 func (ss *SocketServer) ReadPacket(conn *net.TCPConn) (gotcp.Packet, error) {
 	data := make([]byte, 1024)
 	length, err := conn.Read(data)
-	log.Printf("<IN> %x  %x\n", conn, data[0:length])
 	if err != nil {
 		return nil, err
 	}
@@ -30,6 +29,7 @@ func (ss *SocketServer) ReadPacket(conn *net.TCPConn) (gotcp.Packet, error) {
 	if length == 0 {
 		return nil, ErrPeerClosed
 	}
+	log.Printf("<IN>  %x  %x\n", conn, data[0:length])
 
 	return &Raw{
 		raw: data[0:length],

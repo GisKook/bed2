@@ -19,12 +19,13 @@ type RepActiveTest struct {
 	CheckOnline int `json:"checkOnline"`
 }
 
-func EncodeActiveTest(code int) string {
+func EncodeActiveTest(code int, r *http.Request) string {
 	resp := &RepActiveTest{
 		CheckOnline: code,
 	}
 
 	response, _ := json.Marshal(resp)
+	RecordRecv(r, string(response))
 
 	return string(response)
 }
@@ -33,14 +34,14 @@ func (h *HttpServer) HandleActiveTest(endpoint string) {
 	h.mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if x := recover(); x != nil {
-				fmt.Fprint(w, EncodeActiveTest(HTTP_INTERAL_ERROR))
+				fmt.Fprint(w, EncodeActiveTest(HTTP_INTERAL_ERROR, r))
 			}
 		}()
 		RecordSend(r)
 		r.ParseForm()
 		mac := r.Form.Get("mac")
-		if mac == "" && len(mac) != 12 {
-			fmt.Fprint(w, EncodeActiveTest(HTTP_LACK_PARAMTER))
+		if mac == "" || len(mac) != 12 {
+			fmt.Fprint(w, EncodeActiveTest(HTTP_LACK_PARAMTER, r))
 			RecordSendLackParamter(r)
 			return
 		}
@@ -55,10 +56,10 @@ func (h *HttpServer) HandleActiveTest(endpoint string) {
 
 			select {
 			case resp := <-ch:
-				fmt.Fprint(w, EncodeActiveTest(int(resp.Result)))
+				fmt.Fprint(w, EncodeActiveTest(int(resp.Result), r))
 
 			case <-time.After(time.Duration(h.conf.TimeOut) * time.Second):
-				fmt.Fprint(w, EncodeActiveTest(HTTP_NOT_CONNECTED))
+				fmt.Fprint(w, EncodeActiveTest(HTTP_NOT_CONNECTED, r))
 			}
 			h.router.delRequest(index)
 		}

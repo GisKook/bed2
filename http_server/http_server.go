@@ -3,6 +3,7 @@ package http_server
 import (
 	"github.com/giskook/bed2/base"
 	"github.com/giskook/bed2/conf"
+	"log"
 	"net/http"
 )
 
@@ -45,7 +46,10 @@ func (h *HttpServer) Init() {
 }
 
 func (h *HttpServer) Start() error {
-	return http.ListenAndServe(h.conf.Addr, nil)
+	defer func() {
+		log.Println("http   Listening", h.conf.Addr)
+	}()
+	return http.ListenAndServe(h.conf.Addr, h.mux)
 }
 
 func (h *HttpServer) makeRequest() (chan *base.SocketResponse, uint32) {

@@ -9,8 +9,9 @@ import (
 type Code int
 
 const (
-	HTTP_CONSTANT_SEND_REQ          string = "%x req \n"
-	HTTP_CONSTANT_SEND_REQ_LACK_PAR string = "%x req \n"
+	HTTP_CONSTANT_SEND_REQ          string = "<http req> %x %s\n"
+	HTTP_CONSTANT_SEND_REP          string = "<http rep> %x %s\n"
+	HTTP_CONSTANT_SEND_REQ_LACK_PAR string = "请检查参数\n"
 
 	HTTP_REP_SUCCESS        Code = 0
 	HTTP_REP_LACK_PARAMETER Code = 1
@@ -45,9 +46,13 @@ func EncodeGeneralResponse(code Code) string {
 }
 
 func RecordSend(r *http.Request) {
-	log.Printf(HTTP_CONSTANT_SEND_REQ, r)
+	log.Printf(HTTP_CONSTANT_SEND_REQ, &r.URL, r.URL)
+}
+
+func RecordRecv(r *http.Request, resp string) {
+	log.Printf(HTTP_CONSTANT_SEND_REP, &r.URL, resp)
 }
 
 func RecordSendLackParamter(r *http.Request) {
-	log.Println(HTTP_CONSTANT_SEND_REQ_LACK_PAR, r)
+	log.Println(HTTP_CONSTANT_SEND_REQ_LACK_PAR)
 }

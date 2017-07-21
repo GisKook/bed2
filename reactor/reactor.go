@@ -31,10 +31,8 @@ func (r *Reactor) Start() {
 
 	r.http = http_server.NewHttpServer(r.conf.Http)
 	r.http.Init()
-	err = r.http.Start()
-	if err != nil {
-		log.Println(err.Error())
-	}
+	go r.http.Start()
+	r.shunt()
 }
 
 func (r *Reactor) Close() {

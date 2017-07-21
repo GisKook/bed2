@@ -120,12 +120,13 @@ type RepControl struct {
 	Result int `json:"result"`
 }
 
-func EncodeControl(code int) string {
+func EncodeControl(code int, r *http.Request) string {
 	resp := &RepControl{
 		Result: code,
 	}
 
 	response, _ := json.Marshal(resp)
+	RecordRecv(r, string(response))
 
 	return string(response)
 }
@@ -134,15 +135,15 @@ func (h *HttpServer) HandleControl(endpoint string) {
 	h.mux.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if x := recover(); x != nil {
-				fmt.Fprint(w, EncodeControl(HTTP_CTL_INTERAL_ERROR))
+				fmt.Fprint(w, EncodeControl(HTTP_CTL_INTERAL_ERROR, r))
 			}
 		}()
 		RecordSend(r)
 		r.ParseForm()
 		mac := r.Form.Get("mac")
 		code := r.Form.Get("type")
-		if mac == "" && len(mac) != 12 && !isValidParamter(code) {
-			fmt.Fprint(w, EncodeControl(HTTP_CTL_LACK_PARAMTER))
+		if mac == "" || len(mac) != 12 || !isValidParamter(code) {
+			fmt.Fprint(w, EncodeControl(HTTP_CTL_LACK_PARAMTER, r))
 			RecordSendLackParamter(r)
 			return
 		}
@@ -161,10 +162,10 @@ func (h *HttpServer) HandleControl(endpoint string) {
 
 			select {
 			case resp := <-ch:
-				fmt.Fprint(w, EncodeControl(int(resp.Result)))
+				fmt.Fprint(w, EncodeControl(int(resp.Result), r))
 
 			case <-time.After(time.Duration(h.conf.TimeOut) * time.Second):
-				fmt.Fprint(w, EncodeControl(HTTP_CTL_INTERAL_ERROR))
+				fmt.Fprint(w, EncodeControl(HTTP_CTL_INTERAL_ERROR, r))
 			}
 			h.router.delRequest(index)
 		} else {

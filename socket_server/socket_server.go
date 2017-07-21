@@ -42,16 +42,19 @@ func (ss *SocketServer) Start() error {
 	ss.srv = gotcp.NewServer(config, ss, ss)
 
 	go ss.srv.Start(listener, time.Second)
-	log.Println("listening:", listener.Addr())
+	log.Println("socket Listening:", listener.Addr())
 
 	return nil
 }
 
-func (ss *SocketServer) Send(id uint64, p gotcp.Packet) {
+func (ss *SocketServer) Send(id uint64, p gotcp.Packet) error {
 	c := ss.cm.Get(id)
 	if c != nil {
-		c.Send(p)
+		return c.Send(p)
 	}
+
+	return base.ErrBedOffline
+
 }
 
 func (ss *SocketServer) Close() {
