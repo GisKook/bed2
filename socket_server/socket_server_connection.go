@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+const (
+	CONNECTION_NOT_LOGIN uint8 = 0
+	CONNECTION_LOGIN     uint8 = 1
+)
+
 type ConnConf struct {
 	read_limit  int
 	write_limit int
@@ -20,6 +25,7 @@ type Connection struct {
 	read_timestamp  int64
 	write_timestamp int64
 	exit            chan struct{}
+	status          uint8
 
 	ticker *time.Ticker
 }

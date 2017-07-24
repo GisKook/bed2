@@ -7,13 +7,16 @@ import (
 func (ss *SocketServer) eh_login(p []byte, c *Connection) {
 	login := protocol.ParseReqLogin(p)
 	c.ID = login.ID
+	c.status = CONNECTION_LOGIN
 	ss.cm.Put(login.ID, c)
 	c.Send(login)
 }
 
 func (ss *SocketServer) eh_heart(p []byte, c *Connection) {
 	heart := protocol.ParseReqHeart(p)
-	c.Send(heart)
+	if c.status == CONNECTION_LOGIN {
+		c.Send(heart)
+	}
 }
 
 func (ss *SocketServer) eh_control(p []byte) {

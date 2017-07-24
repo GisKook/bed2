@@ -13,6 +13,7 @@ type ReqActivePkg struct {
 func (control *ReqActivePkg) Serialize() []byte {
 	var writer bytes.Buffer
 	WriteHeader(&writer, PROTOCOL_REQ_ACTIVE_TEST)
+	base.WriteDWord(&writer, control.SerialID)
 	WriteTail(&writer)
 
 	return writer.Bytes()
