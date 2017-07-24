@@ -6,6 +6,7 @@ import (
 	"github.com/giskook/bed2/base"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -141,7 +142,8 @@ func (h *HttpServer) HandleControl(endpoint string) {
 		RecordSend(r)
 		r.ParseForm()
 		mac := r.Form.Get("mac")
-		code := r.Form.Get("type")
+		_code := r.Form.Get("type")
+		code := strings.ToLower(_code)
 		if mac == "" || len(mac) != 12 || !isValidParamter(code) {
 			fmt.Fprint(w, EncodeControl(HTTP_CTL_LACK_PARAMTER, r))
 			RecordSendLackParamter(r)

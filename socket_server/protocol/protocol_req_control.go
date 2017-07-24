@@ -14,7 +14,7 @@ type ReqControlPkg struct {
 
 func (p *ReqControlPkg) Serialize() []byte {
 	var writer bytes.Buffer
-	WriteHeader(&writer, PROTOCOL_REP_CONTROL)
+	WriteHeader(&writer, PROTOCOL_REQ_CONTROL)
 	base.WriteDWord(&writer, p.SerialID)
 	base.WriteByte(&writer, p.Code)
 	base.WriteByte(&writer, p.Action)

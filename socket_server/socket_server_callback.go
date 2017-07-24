@@ -24,6 +24,7 @@ func (ss *SocketServer) OnClose(c *gotcp.Conn) {
 	ss.cm.Del(connection.ID)
 	connection.Close()
 	log.Printf("<DIS> %x\n", c.GetRawConn())
+	panic("ddd")
 }
 
 func (ss *SocketServer) OnMessage(c *gotcp.Conn, p gotcp.Packet) bool {
