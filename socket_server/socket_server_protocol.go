@@ -23,7 +23,7 @@ func (ss *SocketServer) ReadPacket(conn *net.TCPConn) (gotcp.Packet, error) {
 	data := make([]byte, 1024)
 	length, err := conn.Read(data)
 	if err != nil {
-		log.Println(err.Error())
+		log.Printf("<READ>%x  %s\n", conn, err.Error())
 		return nil, err
 	}
 

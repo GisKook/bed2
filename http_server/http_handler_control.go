@@ -20,10 +20,10 @@ const (
 	CTL_BEDPAN_OPEN_STOP  string = "11"
 	CTL_BEDPAN_CLOSE_MOVE string = "20"
 	CTL_BEDPAN_CLOSE_STOP string = "21"
-	CTL_TURN_LEFT_MOVE    string = "30"
-	CTL_TURN_LEFT_STOP    string = "31"
-	CTL_TURN_RIGHT_MOVE   string = "40"
-	CTL_TURN_RIGHT_STOP   string = "41"
+	CTL_TURN_RIGHT_MOVE   string = "30"
+	CTL_TURN_RIGHT_STOP   string = "31"
+	CTL_TURN_LEFT_MOVE    string = "40"
+	CTL_TURN_LEFT_STOP    string = "41"
 	CTL_RAISE_BACK_MOVE   string = "50"
 	CTL_RAISE_BACK_STOP   string = "51"
 	CTL_LAND_BACK_MOVE    string = "60"
@@ -34,7 +34,7 @@ const (
 	CTL_LAND_LEG_STOP     string = "81"
 	CTL_AUTO_TURN         string = "9"
 	CTL_SAT_UP            string = "0a"
-	CTL_EMERGENCY_STOP    string = "0b"
+	CTL_EMERGENCY_STOP    string = "91"
 	CTL_RESET             string = "0c"
 )
 
@@ -164,8 +164,11 @@ func (h *HttpServer) HandleControl(endpoint string) {
 
 			select {
 			case resp := <-ch:
-				fmt.Fprint(w, EncodeControl(int(resp.Result), r))
-
+				if resp.Result == 0 {
+					fmt.Fprint(w, EncodeControl(HTTP_CTL_SUCCESS, r))
+				} else {
+					fmt.Fprint(w, EncodeControl(HTTP_CTL_FAIL, r))
+				}
 			case <-time.After(time.Duration(h.conf.TimeOut) * time.Second):
 				fmt.Fprint(w, EncodeControl(HTTP_CTL_INTERAL_ERROR, r))
 			}
