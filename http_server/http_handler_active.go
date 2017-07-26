@@ -55,8 +55,12 @@ func (h *HttpServer) HandleActiveTest(endpoint string) {
 			})
 
 			select {
-			case <-ch:
-				fmt.Fprint(w, EncodeActiveTest(HTTP_CONNECTED, r))
+			case resp := <-ch:
+				if resp.Result == 0 {
+					fmt.Fprint(w, EncodeActiveTest(HTTP_CONNECTED, r))
+				} else {
+					fmt.Fprint(w, EncodeActiveTest(HTTP_NOT_CONNECTED, r))
+				}
 
 			case <-time.After(time.Duration(h.conf.TimeOut) * time.Second):
 				fmt.Fprint(w, EncodeActiveTest(HTTP_NOT_CONNECTED, r))
