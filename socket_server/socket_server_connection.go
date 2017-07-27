@@ -57,6 +57,7 @@ func (c *Connection) UpdateWriteFlag() {
 }
 
 func (c *Connection) Send(p gotcp.Packet) error {
+	c.UpdateWriteFlag()
 	return c.c.AsyncWritePacket(p, 0)
 }
 

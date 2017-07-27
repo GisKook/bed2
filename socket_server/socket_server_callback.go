@@ -4,6 +4,7 @@ import (
 	"github.com/gansidui/gotcp"
 	"github.com/giskook/bed2/socket_server/protocol"
 	"log"
+	"runtime/debug"
 )
 
 func (ss *SocketServer) OnConnect(c *gotcp.Conn) bool {
@@ -24,10 +25,12 @@ func (ss *SocketServer) OnClose(c *gotcp.Conn) {
 	ss.cm.Del(connection.ID)
 	connection.Close()
 	log.Printf("<DIS> %x\n", c.GetRawConn())
+	debug.PrintStack()
 }
 
 func (ss *SocketServer) OnMessage(c *gotcp.Conn, p gotcp.Packet) bool {
 	connection := c.GetExtraData().(*Connection)
+	connection.UpdateReadFlag()
 	connection.RecvBuffer.Write(p.Serialize())
 	for {
 		protocol_id, length := protocol.CheckProtocol(connection.RecvBuffer)
