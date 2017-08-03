@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/http/httputil"
 )
 
 type Code int
@@ -46,7 +47,12 @@ func EncodeGeneralResponse(code Code) string {
 }
 
 func RecordSend(r *http.Request) {
-	log.Printf(HTTP_CONSTANT_SEND_REQ, &r.URL, r.URL)
+	v, e := httputil.DumpRequest(r, true)
+	if e != nil {
+		log.Println(e.Error())
+		return
+	}
+	log.Println(string(v))
 }
 
 func RecordRecv(r *http.Request, resp string) {

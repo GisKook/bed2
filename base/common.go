@@ -1,8 +1,9 @@
 package base
 
 const (
-	PROTOCOL_REQ_CONTROL     uint16 = 0x0003
-	PROTOCOL_REQ_ACTIVE_TEST uint16 = 0x0004
+	PROTOCOL_REQ_CONTROL                  uint16 = 0x0003
+	PROTOCOL_REQ_ACTIVE_TEST              uint16 = 0x0004
+	PROTOCOL_REQ_TRANSPARNET_TRANSMISSION uint16 = 0x0005
 
 	PROTOCOL_BED_OFFLINE uint32 = 4
 
@@ -31,6 +32,8 @@ type HttpRequest struct {
 	Code      uint8
 	Action    uint8
 	Result    uint32
+	ByteCount uint32
+	CheckSum  uint16
 }
 
 type SocketResponse struct {

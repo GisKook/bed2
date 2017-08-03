@@ -10,6 +10,7 @@
 		"WriteLimit":180,
 		"ConnTimeOut":5,
 		"SendChanLimit":20,
-		"RecvChanLimit":20
+		"RecvChanLimit":20,
+		"BlockSize":512
 	}
 }

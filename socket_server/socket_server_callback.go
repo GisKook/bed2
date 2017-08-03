@@ -11,6 +11,7 @@ func (ss *SocketServer) OnConnect(c *gotcp.Conn) bool {
 	connection := NewConnection(c, &ConnConf{
 		read_limit:  ss.conf.ReadLimit,
 		write_limit: ss.conf.WriteLimit,
+		block_size:  ss.conf.BlockSize,
 	})
 
 	c.PutExtraData(connection)
@@ -49,6 +50,12 @@ func (ss *SocketServer) OnMessage(c *gotcp.Conn, p gotcp.Packet) bool {
 			ss.eh_control(buf)
 		case protocol.PROTOCOL_REP_ACTIVE_TEST:
 			ss.eh_active_test(buf)
+		case protocol.PROTOCOL_REP_TRANSPARENT_TRANSMISSION:
+			ss.eh_rep_transparent_transmission(connection, buf)
+		case protocol.PROTOCOL_REP_TRANSPARENT_TRANSMISSION_STOP:
+			ss.eh_rep_transparent_transmission_stop(connection, buf)
+		case protocol.PROTOCOL_REQ_BIN_FILE:
+			ss.eh_req_bin_file(connection, buf)
 		}
 	}
 }

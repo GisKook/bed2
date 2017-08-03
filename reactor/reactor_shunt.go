@@ -30,6 +30,12 @@ func (r *Reactor) shunt() {
 				if err == base.ErrBedOffline {
 					r.send_offline_pkg(p.SerialID)
 				}
+			} else if req.RequestID == base.PROTOCOL_REQ_TRANSPARNET_TRANSMISSION {
+				p := protocol.ParseReqTransparentTransmission(req)
+				err := r.ss.Send(req.BedID, p)
+				if err == base.ErrBedOffline {
+					r.send_offline_pkg(p.SerialID)
+				}
 			}
 		case rep := <-r.ss.SocketOutResult:
 			r.http.Response(rep)

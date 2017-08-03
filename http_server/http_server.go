@@ -8,8 +8,10 @@ import (
 )
 
 const (
-	HTTP_ACTIVE_TEST string = "/olderhc/bed/checkOnline"
-	HTTP_CONTROL     string = "/olderhc/bed/control"
+	HTTP_ACTIVE_TEST              string = "/olderhc/bed/checkOnline"
+	HTTP_CONTROL                  string = "/olderhc/bed/control"
+	HTTP_TRANSPARENT_TRANSMISSION string = "/olderhc/bed/transparent_transmission"
+	HTTP_LOAD_BIN                 string = "/olderhc/bed/load_bin"
 )
 
 type HttpServer struct {
@@ -43,6 +45,8 @@ func (h *HttpServer) request(req *base.HttpRequest) {
 func (h *HttpServer) Init() {
 	h.HandleActiveTest(HTTP_ACTIVE_TEST)
 	h.HandleControl(HTTP_CONTROL)
+	h.HandleTransparentTransmission(HTTP_TRANSPARENT_TRANSMISSION)
+	h.HandleLoadBin(HTTP_LOAD_BIN)
 }
 
 func (h *HttpServer) Start() error {

@@ -18,6 +18,7 @@ type SocketConf struct {
 	ConnTimeOut   int
 	SendChanLimit int
 	RecvChanLimit int
+	BlockSize     int
 }
 type Configuration struct {
 	Http   *HttpConf

@@ -26,3 +26,19 @@ func (ss *SocketServer) eh_control(p []byte) {
 func (ss *SocketServer) eh_active_test(p []byte) {
 	ss.SocketOutResult <- protocol.ParseRepActive(p)
 }
+
+func (ss *SocketServer) eh_rep_transparent_transmission(c *Connection, p []byte) {
+	ss.SocketOutResult <- protocol.ParseRepTransparentTransmission(p)
+	//go c.GoTT()
+	c.SetMode(CONNECTION_TRANSPARENT_TRANSMISSION_MODE)
+}
+
+func (ss *SocketServer) eh_rep_transparent_transmission_stop(c *Connection, p []byte) {
+	//c.StopTT()
+	c.SetMode(CONNECTION_LOGIN)
+}
+
+func (ss *SocketServer) eh_req_bin_file(c *Connection, p []byte) {
+	bin := protocol.ParseReqBin(p)
+	c.SendBinBytes(int(bin.Cursor), int(bin.BlockSize))
+}
