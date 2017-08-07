@@ -69,6 +69,7 @@ func (h *HttpServer) HandleTransparentTransmission(endpoint string) {
 				SerialID:  index,
 				RequestID: base.PROTOCOL_REQ_TRANSPARNET_TRANSMISSION,
 				ByteCount: uint32(base.GetTTB().GetBinSize()),
+				CheckSum:  base.GetTTB().CheckSum,
 			})
 
 			select {

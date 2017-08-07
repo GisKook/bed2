@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -14,6 +13,13 @@ func ReadByte(reader *bytes.Reader) byte {
 	b, _ := reader.ReadByte()
 
 	return b
+}
+
+func ReadWord2(buffer *bytes.Buffer) uint16 {
+	word_byte := make([]byte, 2)
+	buffer.Read(word_byte)
+
+	return binary.BigEndian.Uint16(word_byte)
 }
 
 func ReadWord(reader *bytes.Reader) uint16 {
@@ -153,9 +159,6 @@ func ReadBcdTime(reader *bytes.Reader) uint64 {
 	//loc, _ := time.LoadLocation("Asia/Beijing")
 
 	_time, _ := time.ParseInLocation("20060102150405", "20"+bcd_time_string, time.Local)
-	log.Println("---------")
-	log.Println(bcd_time_string)
-	log.Println(_time.Unix())
 
 	return uint64(_time.Unix())
 }

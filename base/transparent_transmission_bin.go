@@ -1,6 +1,7 @@
 package base
 
 import (
+	//"bytes"
 	"sync"
 	"sync/atomic"
 )
@@ -59,4 +60,25 @@ func (tt *transparent_transmission_bin) IsLoadAvailable() bool {
 
 func (tt *transparent_transmission_bin) SetBytes(bin []byte) {
 	tt.Bin = bin
+	tt.CheckSum = calc_check_sum(bin)
+}
+
+func calc_check_sum(bin []byte) uint16 {
+	var result uint16 = 0
+	for _, v := range bin {
+		result += uint16(v)
+
+	}
+	//	buffer := bytes.NewBuffer(bin)
+	//	buffer_count := buffer.Len()
+	//	if buffer_count%2 == 1 {
+	//		buffer.WriteByte(0)
+	//	}
+	//	var result uint16 = 0
+	//	buffer_count := buffer.Len()
+	//	for i := 0; i < buffer_count; i++ {
+	//		result += ReadWord2(buffer)
+	//	}
+
+	return ^result
 }
