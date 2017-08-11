@@ -3,9 +3,11 @@ package reactor
 import (
 	"github.com/giskook/bed2/base"
 	"github.com/giskook/bed2/socket_server/protocol"
+	"log"
 )
 
 func (r *Reactor) send_offline_pkg(index uint32) {
+	log.Printf("serial %d offline \n", index)
 	r.http.Response(&base.SocketResponse{
 		SerialID: index,
 		Result:   base.PROTOCOL_BED_OFFLINE,
@@ -18,6 +20,7 @@ func (r *Reactor) shunt() {
 		case <-r.exit:
 			return
 		case req := <-r.http.HttpRequestChan:
+			req.Desc()
 			if req.RequestID == base.PROTOCOL_REQ_CONTROL {
 				p := protocol.ParseReqControl(req)
 				err := r.ss.Send(req.BedID, p)

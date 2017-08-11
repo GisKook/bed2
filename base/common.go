@@ -1,5 +1,9 @@
 package base
 
+import (
+	"log"
+)
+
 const (
 	PROTOCOL_REQ_CONTROL                  uint16 = 0x0003
 	PROTOCOL_REQ_ACTIVE_TEST              uint16 = 0x0004
@@ -34,6 +38,10 @@ type HttpRequest struct {
 	Result    uint32
 	ByteCount uint32
 	CheckSum  uint16
+}
+
+func (r *HttpRequest) Desc() {
+	log.Printf("id %d, seq %d, reqid %d, code %d, action %d, byte count %d, checksum %d\n", r.BedID, r.SerialID, r.RequestID, r.Code, r.Action, r.ByteCount, r.CheckSum)
 }
 
 type SocketResponse struct {
