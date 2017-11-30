@@ -93,8 +93,9 @@ func CheckProtocol(buffer *bytes.Buffer) (uint16, uint16) {
 		if int(len_in_protocol) > bufferlen {
 			return PROTOCOL_HALF_PACK, 0
 		} else {
-			chkSum := checkSum(buffer.Bytes(), len_in_protocol-2)
-			if chkSum == buffer.Bytes()[len_in_protocol-2] && buffer.Bytes()[len_in_protocol-1] == PROTOCOL_END_FLAG {
+			//chkSum := checkSum(buffer.Bytes(), len_in_protocol-2)
+			//if chkSum == buffer.Bytes()[len_in_protocol-2] && buffer.Bytes()[len_in_protocol-1] == PROTOCOL_END_FLAG {
+			if buffer.Bytes()[len_in_protocol-1] == PROTOCOL_END_FLAG {
 				protocol_id := base.GetWord(buffer.Bytes()[5:7])
 				return protocol_id, len_in_protocol
 			} else {

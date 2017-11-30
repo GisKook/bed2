@@ -30,7 +30,7 @@ func (ss *SocketServer) eh_active_test(p []byte) {
 func (ss *SocketServer) eh_rep_transparent_transmission(c *Connection, p []byte) {
 	ss.SocketOutResult <- protocol.ParseRepTransparentTransmission(p)
 	//go c.GoTT()
-	c.SetMode(CONNECTION_TRANSPARENT_TRANSMISSION_MODE)
+		c.SetMode(CONNECTION_TRANSPARENT_TRANSMISSION_MODE)
 }
 
 func (ss *SocketServer) eh_rep_transparent_transmission_stop(c *Connection, p []byte) {
