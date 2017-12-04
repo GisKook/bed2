@@ -41,7 +41,7 @@ func (ss *SocketServer) Start() error {
 
 	ss.srv = gotcp.NewServer(config, ss, ss)
 
-	go ss.srv.Start(listener, time.Second)
+	go ss.srv.Start(listener, time.Duration(ss.conf.ConnTimeOut), time.Second)
 	log.Println("socket Listening:", listener.Addr())
 
 	return nil
